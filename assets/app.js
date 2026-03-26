@@ -1,36 +1,36 @@
 const STORAGE_KEY = "teaching-demo:v2";
 
 const COURSE_TYPES = [
-  { id: "required", label: "Required", coef: 1, price: 120, desc: "Core and foundation courses" },
-  { id: "elective", label: "Elective", coef: 0.9, price: 105, desc: "General elective courses" },
-  { id: "public", label: "Public", coef: 1.05, price: 112, desc: "Shared public courses" },
-  { id: "lab", label: "Lab", coef: 1.2, price: 128, desc: "Labs and computer sessions" },
-  { id: "practice", label: "Practice", coef: 1.25, price: 135, desc: "Practice and project courses" },
-  { id: "thesis", label: "Thesis", coef: 1.35, price: 150, desc: "Thesis and graduation supervision" },
+  { id: "required", label: "必修课", coef: 1, price: 120, desc: "专业主干课和基础课" },
+  { id: "elective", label: "选修课", coef: 0.9, price: 105, desc: "面向选修模块的课程" },
+  { id: "public", label: "公共课", coef: 1.05, price: 112, desc: "跨院系共享课程和公共课程" },
+  { id: "lab", label: "实验课", coef: 1.2, price: 128, desc: "实验和上机类课程" },
+  { id: "practice", label: "实践课", coef: 1.25, price: 135, desc: "实训和项目制课程" },
+  { id: "thesis", label: "毕业设计", coef: 1.35, price: 150, desc: "毕业设计与论文指导" },
 ];
 
 const COURSE_MAP = Object.fromEntries(COURSE_TYPES.map((item) => [item.id, item]));
 
 const SIZE_RULES = [
-  { min: 0, max: 39, coef: 1, label: "1-39 students" },
-  { min: 40, max: 79, coef: 1.1, label: "40-79 students" },
-  { min: 80, max: 119, coef: 1.2, label: "80-119 students" },
-  { min: 120, max: Number.POSITIVE_INFINITY, coef: 1.32, label: "120+ students" },
+  { min: 0, max: 39, coef: 1, label: "1-39人" },
+  { min: 40, max: 79, coef: 1.1, label: "40-79人" },
+  { min: 80, max: 119, coef: 1.2, label: "80-119人" },
+  { min: 120, max: Number.POSITIVE_INFINITY, coef: 1.32, label: "120人及以上" },
 ];
 
 const DEPARTMENTS = [
-  "Computer Science School",
-  "AI School",
-  "Information School",
-  "Mathematics School",
-  "Business School",
-  "General Education Center",
+  "计算机学院",
+  "人工智能学院",
+  "信息工程学院",
+  "数学与统计学院",
+  "经济管理学院",
+  "公共基础教学部",
 ];
 
 const STATUS_LABELS = {
-  pending: "Pending",
-  approved: "Approved",
-  returned: "Returned",
+  pending: "待审批",
+  approved: "已通过",
+  returned: "已退回",
 };
 
 const STATUS_ORDER = {
@@ -136,21 +136,21 @@ function renderTopbar(user) {
       <a class="brand" href="#/">
         <span class="brand-mark">TH</span>
         <span class="brand-copy">
-          <strong>Teaching Workload Demo</strong>
-          <span>Teacher claim / Admin review / Batch export</span>
+          <strong>课时申报与审批演示系统</strong>
+          <span>教师申报 / 管理员审批 / 批量导出</span>
         </span>
       </a>
 
       <div class="topbar-actions">
         ${user
           ? `
-            <a class="nav-link desktop-only" href="${dashboardLink}">${user.role === "teacher" ? "Teacher desk" : "Admin desk"}</a>
-            <span class="segmented-link desktop-only">${escapeHtml(user.role)} | ${escapeHtml(user.name)}</span>
-            <button class="button-secondary" type="button" data-action="logout">Log out</button>
+            <a class="nav-link desktop-only" href="${dashboardLink}">${user.role === "teacher" ? "教师工作台" : "管理员工作台"}</a>
+            <span class="segmented-link desktop-only">${escapeHtml(user.role === "teacher" ? "教师" : "管理员")} | ${escapeHtml(user.name)}</span>
+            <button class="button-secondary" type="button" data-action="logout">退出登录</button>
           `
           : `
-            <a class="nav-link" href="#/teacher-login">Teacher login</a>
-            <a class="nav-link" href="#/admin-login">Admin login</a>
+            <a class="nav-link" href="#/teacher-login">教师登录</a>
+            <a class="nav-link" href="#/admin-login">管理员登录</a>
           `}
       </div>
     </header>
@@ -167,56 +167,56 @@ function renderHome() {
     <section class="home-grid">
       <article class="hero-panel">
         <div class="hero-copy">
-          <span class="eyebrow">Overview</span>
-          <h1>A flexible demo for teaching hours and teaching fee review.</h1>
+          <span class="eyebrow">系统概览</span>
+          <h1>一套适合学校内部使用的课时申报与课时费审批演示系统。</h1>
           <p>
-            This version focuses on a generic school workflow: separate login pages for teachers and admins, a registration entry, teacher self-service workload claims, admin review, and bulk CSV export.
+            当前版本先围绕通用学校场景搭建：教师与管理员分开登录，支持注册入口、教师自主申报课时、管理员审批，以及批量导出数据。
           </p>
         </div>
 
         <div class="hero-stats">
-          ${renderSummaryCard("Roles", "2", "Teacher and admin with separate entry pages")}
-          ${renderSummaryCard("Core flow", "5 steps", "Register, login, claim, review, export")}
-          ${renderSummaryCard("Export", "CSV", "Export selected records or current filters")}
-          ${renderSummaryCard("Deployment", "Static demo", "No backend required for the first client demo")}
+          ${renderSummaryCard("角色数量", "2个", "教师与管理员拥有独立入口")}
+          ${renderSummaryCard("核心流程", "5步", "注册、登录、申报、审批、导出")}
+          ${renderSummaryCard("导出格式", "CSV", "支持导出选中记录或筛选结果")}
+          ${renderSummaryCard("部署形态", "静态演示版", "无需后端即可先做客户演示")}
         </div>
 
         <div class="inline-actions spaced">
-          <a class="button" href="#/teacher-login">Open teacher side</a>
-          <a class="button-secondary" href="#/admin-login">Open admin side</a>
+          <a class="button" href="#/teacher-login">进入教师端</a>
+          <a class="button-secondary" href="#/admin-login">进入管理员端</a>
         </div>
       </article>
 
       <aside class="stack">
         <article class="role-card teacher-card">
-          <span class="panel-kicker">Teacher Side</span>
-          <h3>Teacher workflow</h3>
-          <p class="muted">Teachers log in, submit teaching claims, view live calculations, and track approval status.</p>
+          <span class="panel-kicker">教师端</span>
+          <h3>教师申报流程</h3>
+          <p class="muted">教师登录后可填写课时申报，查看实时测算结果，并持续跟踪审批状态。</p>
           <ul>
-            <li>Separate teacher login page</li>
-            <li>Registration entry for new accounts</li>
-            <li>Claim form with real-time workload preview</li>
-            <li>History list with review notes</li>
+            <li>独立教师登录页</li>
+            <li>支持教师注册</li>
+            <li>申报表单带实时测算</li>
+            <li>可查看历史记录和审批意见</li>
           </ul>
           <div class="inline-actions">
-            <a class="button" href="#/teacher-login">Teacher login</a>
-            <a class="button-ghost" href="#/register/teacher">Teacher register</a>
+            <a class="button" href="#/teacher-login">教师登录</a>
+            <a class="button-ghost" href="#/register/teacher">教师注册</a>
           </div>
         </article>
 
         <article class="role-card admin-card">
-          <span class="panel-kicker">Admin Side</span>
-          <h3>Admin workflow</h3>
-          <p class="muted">Admins filter claims, inspect calculation logic, approve or return records, and export data in bulk.</p>
+          <span class="panel-kicker">管理员端</span>
+          <h3>管理员审批流程</h3>
+          <p class="muted">管理员可筛选申报记录、查看计算依据、审批或退回，并按批量导出数据。</p>
           <ul>
-            <li>Separate admin login page</li>
-            <li>Review panel with approval note</li>
-            <li>Batch approval for selected pending records</li>
-            <li>Selected export and filtered export</li>
+            <li>独立管理员登录页</li>
+            <li>审批侧栏支持填写意见</li>
+            <li>支持批量通过待审批记录</li>
+            <li>支持按选中或筛选结果导出</li>
           </ul>
           <div class="inline-actions">
-            <a class="button" href="#/admin-login">Admin login</a>
-            <a class="button-ghost" href="#/register/admin">Admin register</a>
+            <a class="button" href="#/admin-login">管理员登录</a>
+            <a class="button-ghost" href="#/register/admin">管理员注册</a>
           </div>
         </article>
       </aside>
@@ -225,40 +225,40 @@ function renderHome() {
     <section class="panel spaced">
       <div class="section-head">
         <div>
-          <span class="panel-kicker">Demo Logic</span>
-          <h2>Current generic calculation rule</h2>
-          <p>This rule is transparent on purpose so it can be replaced later with the school's real policy.</p>
+          <span class="panel-kicker">演示逻辑</span>
+          <h2>当前采用的通用计算规则</h2>
+          <p>这套规则故意做得透明易懂，方便后续直接替换为学校正式制度。</p>
         </div>
       </div>
 
       <div class="info-grid">
         <div class="story-card">
-          <span class="panel-kicker">Formula</span>
-          <h3>Workload formula</h3>
-          <p class="muted">Settled hours = (weeks x weekly hours + extra hours) x course coefficient x class size coefficient x adjustment coefficient</p>
-          <p class="muted">Teaching fee = settled hours x unit price</p>
+          <span class="panel-kicker">公式</span>
+          <h3>课时计算方式</h3>
+          <p class="muted">折算课时 = (周数 × 周学时 + 额外课时) × 课程系数 × 人数系数 × 调节系数</p>
+          <p class="muted">课时费 = 折算课时 x 课时单价</p>
         </div>
 
         <div class="story-card">
-          <span class="panel-kicker">Course Types</span>
+          <span class="panel-kicker">课程类型</span>
           <ul>
-            ${COURSE_TYPES.map((item) => `<li>${escapeHtml(item.label)}: coef ${formatPlain(item.coef)}, price ${formatCurrency(item.price)}</li>`).join("")}
+            ${COURSE_TYPES.map((item) => `<li>${escapeHtml(item.label)}：系数 ${formatPlain(item.coef)}，单价 ${formatCurrency(item.price)}</li>`).join("")}
           </ul>
         </div>
 
         <div class="story-card">
-          <span class="panel-kicker">Class Size</span>
+          <span class="panel-kicker">人数规则</span>
           <ul>
-            ${SIZE_RULES.map((item) => `<li>${escapeHtml(item.label)}: coef ${formatPlain(item.coef)}</li>`).join("")}
+            ${SIZE_RULES.map((item) => `<li>${escapeHtml(item.label)}：系数 ${formatPlain(item.coef)}</li>`).join("")}
           </ul>
         </div>
 
         <div class="story-card">
-          <span class="panel-kicker">Demo Accounts</span>
+          <span class="panel-kicker">演示账号</span>
           <ul>
-            <li>Teacher: <code>zhang.teacher</code> / <code>Demo123!</code></li>
-            <li>Admin: <code>admin</code> / <code>Demo123!</code></li>
-            <li>Both roles also support self-registration in demo mode</li>
+            <li>教师：<code>zhang.teacher</code> / <code>Demo123!</code></li>
+            <li>管理员：<code>admin</code> / <code>Demo123!</code></li>
+            <li>当前也支持教师和管理员自行注册账号</li>
           </ul>
         </div>
       </div>
@@ -273,46 +273,46 @@ function renderLoginPage(role) {
     <section class="auth-shell">
       <div class="auth-layout">
         <article class="auth-copy">
-          <span class="eyebrow">${isTeacher ? "Teacher Login" : "Admin Login"}</span>
-          <h1>${isTeacher ? "Teachers can submit workload claims here." : "Admins can review all claims here."}</h1>
+          <span class="eyebrow">${isTeacher ? "教师登录" : "管理员登录"}</span>
+          <h1>${isTeacher ? "教师在这里提交课时申报。" : "管理员在这里完成审批操作。"}</h1>
           <p>
             ${isTeacher
-              ? "Use the teacher portal to report course workload, view fee estimates and track approval results."
-              : "Use the admin console to filter records, inspect calculation details, write review notes and export data."}
+              ? "教师端用于填写课时量、查看课时费测算结果，并跟踪审批状态。"
+              : "管理员端用于筛选申报记录、查看计算细节、填写审批意见并导出数据。"}
           </p>
           <div class="panel-grid">
-            ${renderStoryCard("Separate entry", "The two roles use different login pages as requested.")}
-            ${renderStoryCard("Registration entry", "This demo keeps role-specific registration enabled for easy client review.")}
+            ${renderStoryCard("入口独立", "教师和管理员使用不同登录页，符合当前需求。")}
+            ${renderStoryCard("注册可用", "为方便演示，当前版本保留了角色对应的注册入口。")}
           </div>
         </article>
 
         <article class="auth-card">
           <div>
-            <span class="panel-kicker">${isTeacher ? "Teacher Portal" : "Admin Console"}</span>
-            <h2>${isTeacher ? "Sign in as teacher" : "Sign in as admin"}</h2>
-            <p class="panel-subtitle">You can also auto-fill the seeded demo account.</p>
+            <span class="panel-kicker">${isTeacher ? "教师入口" : "管理员入口"}</span>
+            <h2>${isTeacher ? "登录教师端" : "登录管理员端"}</h2>
+            <p class="panel-subtitle">也可以一键填入内置演示账号。</p>
           </div>
 
           <form id="${role}-login-form" class="stack">
             <label class="field-stack">
-              <span class="field-label">Username</span>
+              <span class="field-label">用户名</span>
               <input name="username" placeholder="${isTeacher ? "zhang.teacher" : "admin"}" autocomplete="username" />
             </label>
 
             <label class="field-stack">
-              <span class="field-label">Password</span>
-              <input name="password" type="password" placeholder="Enter password" autocomplete="current-password" />
+              <span class="field-label">密码</span>
+              <input name="password" type="password" placeholder="请输入密码" autocomplete="current-password" />
             </label>
 
             <div class="inline-actions">
-              <button class="button" type="submit">${isTeacher ? "Login teacher side" : "Login admin side"}</button>
-              <button class="button-secondary" type="button" data-action="fill-demo" data-role="${role}">Fill demo account</button>
+              <button class="button" type="submit">${isTeacher ? "登录教师端" : "登录管理员端"}</button>
+              <button class="button-secondary" type="button" data-action="fill-demo" data-role="${role}">填入演示账号</button>
             </div>
           </form>
 
           <div class="auth-links">
-            <a class="ghost-button" href="${isTeacher ? "#/register/teacher" : "#/register/admin"}">Create account</a>
-            <a class="ghost-button" href="#/">Back home</a>
+            <a class="ghost-button" href="${isTeacher ? "#/register/teacher" : "#/register/admin"}">创建账号</a>
+            <a class="ghost-button" href="#/">返回首页</a>
           </div>
         </article>
       </div>
@@ -327,64 +327,64 @@ function renderRegisterPage(role) {
     <section class="auth-shell">
       <div class="auth-layout">
         <article class="auth-copy">
-          <span class="eyebrow">${isTeacher ? "Teacher Register" : "Admin Register"}</span>
-          <h1>${isTeacher ? "Create a teacher account and start claiming." : "Create an admin account for demo review."}</h1>
+          <span class="eyebrow">${isTeacher ? "教师注册" : "管理员注册"}</span>
+          <h1>${isTeacher ? "创建教师账号后即可开始申报。" : "创建管理员账号后即可开始审批演示。"}</h1>
           <p>
             ${isTeacher
-              ? "Teachers are taken directly to the teacher desk after successful registration."
-              : "Admin self-registration is only for demo convenience; a real project would often create admin users in the backend."}
+              ? "教师注册成功后会自动进入教师工作台。"
+              : "管理员自助注册仅用于当前演示版体验，正式项目通常由后台统一创建管理员账号。"}
           </p>
           <div class="panel-grid">
-            ${renderStoryCard("Flexible fields", "Employee number, department and role logic can be replaced later with real organization data.")}
-            ${renderStoryCard("Stored locally", "The new account is saved in browser storage so the demo survives page refreshes.")}
+            ${renderStoryCard("字段可扩展", "工号、院系和角色逻辑后续都可以替换成真实组织数据。")}
+            ${renderStoryCard("本地保存", "新账号保存在当前浏览器中，刷新页面后仍然有效。")}
           </div>
         </article>
 
         <article class="auth-card">
           <div>
-            <span class="panel-kicker">${isTeacher ? "Teacher Register" : "Admin Register"}</span>
-            <h2>${isTeacher ? "Create teacher account" : "Create admin account"}</h2>
-            <p class="panel-subtitle">The new account signs in automatically after creation.</p>
+            <span class="panel-kicker">${isTeacher ? "教师注册" : "管理员注册"}</span>
+            <h2>${isTeacher ? "创建教师账号" : "创建管理员账号"}</h2>
+            <p class="panel-subtitle">创建成功后会自动登录。</p>
           </div>
 
           <form id="register-form" class="stack" data-role="${role}">
             <div class="field-grid">
               <label class="field-stack">
-                <span class="field-label">Name</span>
-                <input name="name" placeholder="${isTeacher ? "Teacher name" : "Admin name"}" />
+                <span class="field-label">姓名</span>
+                <input name="name" placeholder="${isTeacher ? "请输入教师姓名" : "请输入管理员姓名"}" />
               </label>
 
               <label class="field-stack">
-                <span class="field-label">Username</span>
+                <span class="field-label">用户名</span>
                 <input name="username" placeholder="${isTeacher ? "teacher.username" : "admin.username"}" autocomplete="username" />
               </label>
 
               <label class="field-stack">
-                <span class="field-label">Email</span>
+                <span class="field-label">邮箱</span>
                 <input name="email" type="email" placeholder="name@example.edu" autocomplete="email" />
               </label>
 
               <label class="field-stack">
-                <span class="field-label">Password</span>
-                <input name="password" type="password" placeholder="At least 6 characters" autocomplete="new-password" />
+                <span class="field-label">密码</span>
+                <input name="password" type="password" placeholder="至少6位字符" autocomplete="new-password" />
               </label>
 
               <label class="field-stack">
-                <span class="field-label">${isTeacher ? "Department" : "Office"}</span>
+                <span class="field-label">${isTeacher ? "所属院系" : "所属部门"}</span>
                 <select name="department">
                   ${renderSelectOptions(DEPARTMENTS, DEPARTMENTS[0])}
                 </select>
               </label>
 
               <label class="field-stack">
-                <span class="field-label">${isTeacher ? "Employee No." : "Admin No."}</span>
+                <span class="field-label">${isTeacher ? "教师工号" : "管理员编号"}</span>
                 <input name="employeeNo" placeholder="${isTeacher ? "T2026008" : "A2026003"}" />
               </label>
             </div>
 
             <div class="inline-actions">
-              <button class="button" type="submit">${isTeacher ? "Register teacher" : "Register admin"}</button>
-              <a class="button-secondary" href="${isTeacher ? "#/teacher-login" : "#/admin-login"}">Back to login</a>
+              <button class="button" type="submit">${isTeacher ? "注册教师账号" : "注册管理员账号"}</button>
+              <a class="button-secondary" href="${isTeacher ? "#/teacher-login" : "#/admin-login"}">返回登录</a>
             </div>
           </form>
         </article>
@@ -402,9 +402,9 @@ function renderTeacherDashboard(user) {
   return `
     <section class="dashboard-intro">
       <div>
-        <span class="eyebrow">Teacher Desk</span>
-        <h1>${escapeHtml(user.name)}, manage your teaching claims here.</h1>
-        <p class="muted">This page covers claim submission, live calculation preview and personal review tracking.</p>
+        <span class="eyebrow">教师工作台</span>
+        <h1>${escapeHtml(user.name)}，在这里管理你的课时申报。</h1>
+        <p class="muted">当前页面包含课时申报、实时测算预览和个人审批跟踪。</p>
       </div>
 
       <div class="chip-row">
@@ -415,88 +415,88 @@ function renderTeacherDashboard(user) {
     </section>
 
     <section class="summary-grid">
-      ${renderSummaryCard("Pending", `${stats.pendingCount} claims`, "Claims waiting for admin review")}
-      ${renderSummaryCard("Approved hours", `${formatNumber(stats.approvedHours)} h`, "Approved settled workload only")}
-      ${renderSummaryCard("Approved fee", formatCurrency(stats.approvedAmount), "Approved fee total")}
-      ${renderSummaryCard("Returned", `${stats.returnedCount} claims`, "Claims sent back for update")}
+      ${renderSummaryCard("待审批", `${stats.pendingCount} 条`, "等待管理员处理的申报记录")}
+      ${renderSummaryCard("已通过课时", `${formatNumber(stats.approvedHours)} 课时`, "仅统计审批通过的折算课时")}
+      ${renderSummaryCard("已通过课时费", formatCurrency(stats.approvedAmount), "仅统计审批通过的课时费")}
+      ${renderSummaryCard("已退回", `${stats.returnedCount} 条`, "被退回后可重新编辑并提交")}
     </section>
 
     <section class="dashboard-grid">
       <article class="panel">
         <div class="panel-head">
           <div>
-            <span class="panel-kicker">${editing ? "Edit Claim" : "New Claim"}</span>
-            <h2>${editing ? "Update and resubmit a claim" : "Submit a new claim"}</h2>
-            <p class="panel-subtitle">The right panel updates in real time as the teacher fills the form.</p>
+            <span class="panel-kicker">${editing ? "编辑申报" : "新增申报"}</span>
+            <h2>${editing ? "修改并重新提交课时申报" : "提交新的课时申报"}</h2>
+            <p class="panel-subtitle">教师填写表单时，右侧会同步显示实时测算结果。</p>
           </div>
         </div>
 
         <form id="teacher-claim-form" class="stack">
           <div class="field-grid">
             <label class="field-stack">
-              <span class="field-label">Semester</span>
+              <span class="field-label">学期</span>
               <select name="semester">
                 ${renderSelectOptions(SEMESTERS, defaults.semester)}
               </select>
             </label>
 
             <label class="field-stack">
-              <span class="field-label">Course type</span>
+              <span class="field-label">课程类型</span>
               <select name="courseType">
                 ${renderCourseTypeOptions(defaults.courseType)}
               </select>
             </label>
 
             <label class="field-stack">
-              <span class="field-label">Course name</span>
-              <input name="courseName" value="${escapeHtml(defaults.courseName)}" placeholder="Data Structure" />
+              <span class="field-label">课程名称</span>
+              <input name="courseName" value="${escapeHtml(defaults.courseName)}" placeholder="例如：数据结构" />
             </label>
 
             <label class="field-stack">
-              <span class="field-label">Course code</span>
+              <span class="field-label">课程代码</span>
               <input name="courseCode" value="${escapeHtml(defaults.courseCode)}" placeholder="CS201" />
             </label>
 
             <label class="field-stack">
-              <span class="field-label">Class name</span>
-              <input name="className" value="${escapeHtml(defaults.className)}" placeholder="2024 SE Class 1" />
+              <span class="field-label">教学班名称</span>
+              <input name="className" value="${escapeHtml(defaults.className)}" placeholder="例如：2024级软件工程1班" />
             </label>
 
             <label class="field-stack">
-              <span class="field-label">Students</span>
+              <span class="field-label">学生人数</span>
               <input name="studentCount" type="number" min="1" value="${escapeHtml(String(defaults.studentCount))}" />
             </label>
 
             <label class="field-stack">
-              <span class="field-label">Weeks</span>
+              <span class="field-label">授课周数</span>
               <input name="weeks" type="number" min="1" max="30" value="${escapeHtml(String(defaults.weeks))}" />
             </label>
 
             <label class="field-stack">
-              <span class="field-label">Weekly hours</span>
+              <span class="field-label">周学时</span>
               <input name="weeklyHours" type="number" min="0.5" step="0.5" value="${escapeHtml(String(defaults.weeklyHours))}" />
             </label>
 
             <label class="field-stack">
-              <span class="field-label">Extra hours</span>
+              <span class="field-label">额外课时</span>
               <input name="extraHours" type="number" min="0" step="0.5" value="${escapeHtml(String(defaults.extraHours))}" />
             </label>
 
             <label class="field-stack">
-              <span class="field-label">Adjustment coef</span>
+              <span class="field-label">调节系数</span>
               <input name="adjustmentCoef" type="number" min="0.5" max="2" step="0.05" value="${escapeHtml(String(defaults.adjustmentCoef))}" />
             </label>
           </div>
 
           <label class="field-stack">
-            <span class="field-label">Remarks</span>
-            <textarea name="remarks" placeholder="Add teaching notes, grouping details or special workload context.">${escapeHtml(defaults.remarks)}</textarea>
+            <span class="field-label">备注说明</span>
+            <textarea name="remarks" placeholder="可填写授课形式、分组情况或特殊工作量说明。">${escapeHtml(defaults.remarks)}</textarea>
           </label>
 
           <div class="inline-actions">
-            <button class="button" type="submit">${editing ? "Update and resubmit" : "Submit claim"}</button>
-            <button class="button-secondary" type="button" data-action="reset-claim">Reset form</button>
-            ${editing ? `<button class="button-ghost" type="button" data-action="cancel-edit">Cancel edit</button>` : ""}
+            <button class="button" type="submit">${editing ? "更新并重新提交" : "提交申报"}</button>
+            <button class="button-secondary" type="button" data-action="reset-claim">重置表单</button>
+            ${editing ? `<button class="button-ghost" type="button" data-action="cancel-edit">取消编辑</button>` : ""}
           </div>
         </form>
       </article>
@@ -507,8 +507,8 @@ function renderTeacherDashboard(user) {
         <article class="panel">
           <div class="panel-head">
             <div>
-              <span class="panel-kicker">Rule Table</span>
-              <h2>Current generic rule</h2>
+              <span class="panel-kicker">规则说明</span>
+              <h2>当前通用规则</h2>
             </div>
           </div>
 
@@ -535,9 +535,9 @@ function renderTeacherDashboard(user) {
     <section class="panel spaced">
       <div class="panel-head">
         <div>
-          <span class="panel-kicker">My Claims</span>
-          <h2>Claim history</h2>
-          <p class="panel-subtitle">Teachers can reopen pending or returned claims and resubmit them.</p>
+          <span class="panel-kicker">我的申报</span>
+          <h2>申报记录</h2>
+          <p class="panel-subtitle">待审批和已退回的记录都可以再次编辑并重新提交。</p>
         </div>
       </div>
       ${renderTeacherTable(claims)}
@@ -556,9 +556,9 @@ function renderAdminDashboard(user) {
   return `
     <section class="dashboard-intro">
       <div>
-        <span class="eyebrow">Admin Desk</span>
-        <h1>${escapeHtml(user.name)}, review teacher claims here.</h1>
-        <p class="muted">This page covers claim filters, approval actions, side-panel review, and CSV export.</p>
+        <span class="eyebrow">管理员工作台</span>
+        <h1>${escapeHtml(user.name)}，在这里审核教师提交的课时申报。</h1>
+        <p class="muted">当前页面包含记录筛选、审批动作、侧栏详情查看以及 CSV 导出。</p>
       </div>
 
       <div class="chip-row">
@@ -569,61 +569,61 @@ function renderAdminDashboard(user) {
     </section>
 
     <section class="summary-grid">
-      ${renderSummaryCard("Pending", `${stats.pendingCount} claims`, "Claims that still need review")}
-      ${renderSummaryCard("Approved hours", `${formatNumber(stats.approvedHours)} h`, "Approved settled workload total")}
-      ${renderSummaryCard("Approved fee", formatCurrency(stats.approvedAmount), "Approved fee total")}
-      ${renderSummaryCard("Teachers", `${stats.teacherCount}`, "Unique teachers with claims in current data")}
+      ${renderSummaryCard("待审批", `${stats.pendingCount} 条`, "当前仍需审核的申报记录")}
+      ${renderSummaryCard("已通过课时", `${formatNumber(stats.approvedHours)} 课时`, "所有审批通过记录的折算课时总和")}
+      ${renderSummaryCard("已通过课时费", formatCurrency(stats.approvedAmount), "所有审批通过记录的课时费总和")}
+      ${renderSummaryCard("涉及教师", `${stats.teacherCount} 人`, "当前数据中提交过申报的教师人数")}
     </section>
 
     <section class="review-grid">
       <article class="panel">
         <div class="panel-head">
           <div>
-            <span class="panel-kicker">Review List</span>
-            <h2>Claims</h2>
-            <p class="panel-subtitle">Filter, select, approve, return and export records from here.</p>
+            <span class="panel-kicker">审批列表</span>
+            <h2>申报记录</h2>
+            <p class="panel-subtitle">可在这里筛选、勾选、审批、退回和导出记录。</p>
           </div>
 
           <div class="inline-actions">
-            <button class="button-secondary" type="button" data-action="export-filtered" ${claims.length ? "" : "disabled"}>Export filtered</button>
-            <button class="button" type="button" data-action="approve-selected" ${selectedCount ? "" : "disabled"}>Approve selected</button>
+            <button class="button-secondary" type="button" data-action="export-filtered" ${claims.length ? "" : "disabled"}>导出筛选结果</button>
+            <button class="button" type="button" data-action="approve-selected" ${selectedCount ? "" : "disabled"}>批量通过选中项</button>
           </div>
         </div>
 
         <form id="admin-filter-form">
           <div class="filter-grid">
             <label>
-              <span class="field-label">Status</span>
+              <span class="field-label">状态</span>
               <select name="status">
                 ${renderStatusOptions(ui.adminFilters.status)}
               </select>
             </label>
 
             <label>
-              <span class="field-label">Semester</span>
+              <span class="field-label">学期</span>
               <select name="semester">
                 ${renderSelectOptions(["all", ...SEMESTERS], ui.adminFilters.semester, { all: "All semesters" })}
               </select>
             </label>
 
             <label>
-              <span class="field-label">Keyword</span>
-              <input name="keyword" value="${escapeHtml(ui.adminFilters.keyword)}" placeholder="Teacher, course, class" />
+              <span class="field-label">关键词</span>
+              <input name="keyword" value="${escapeHtml(ui.adminFilters.keyword)}" placeholder="教师、课程、教学班" />
             </label>
 
             <label>
-              <span class="field-label">Selection</span>
+              <span class="field-label">已选记录</span>
               <select disabled>
-                <option>${selectedCount ? `${selectedCount} selected` : "No selection"}</option>
+                <option>${selectedCount ? `已选中 ${selectedCount} 条` : "未选择任何记录"}</option>
               </select>
             </label>
           </div>
 
           <div class="filter-actions">
-            <button class="button-secondary" type="submit">Apply filters</button>
-            <button class="button-ghost" type="button" data-action="clear-filters">Clear filters</button>
-            <button class="button-secondary" type="button" data-action="export-selected" ${selectedCount ? "" : "disabled"}>Export selected</button>
-            <button class="button-danger" type="button" data-action="reset-demo">Reset demo data</button>
+            <button class="button-secondary" type="submit">应用筛选</button>
+            <button class="button-ghost" type="button" data-action="clear-filters">清空筛选</button>
+            <button class="button-secondary" type="button" data-action="export-selected" ${selectedCount ? "" : "disabled"}>导出选中记录</button>
+            <button class="button-danger" type="button" data-action="reset-demo">重置演示数据</button>
           </div>
         </form>
 
@@ -636,9 +636,9 @@ function renderAdminDashboard(user) {
         <article class="panel">
           <div class="panel-head">
             <div>
-              <span class="panel-kicker">Review Panel</span>
-              <h2>Approval detail</h2>
-              <p class="panel-subtitle">Inspect the formula and write a review note for a single claim.</p>
+              <span class="panel-kicker">审批详情</span>
+              <h2>单条记录审核</h2>
+              <p class="panel-subtitle">查看计算公式和教师说明，并填写审批意见。</p>
             </div>
           </div>
           ${renderReviewPanel(reviewItem)}
@@ -647,15 +647,15 @@ function renderAdminDashboard(user) {
         <article class="panel">
           <div class="panel-head">
             <div>
-              <span class="panel-kicker">Export Notes</span>
-              <h2>What gets exported</h2>
+              <span class="panel-kicker">导出说明</span>
+              <h2>导出内容</h2>
             </div>
           </div>
 
           <div class="meta-list">
-            <div class="meta-row"><span>Selected export</span><strong>Good for hand-picked batches</strong></div>
-            <div class="meta-row"><span>Filtered export</span><strong>Good for semester or status snapshots</strong></div>
-            <div class="meta-row"><span>Fields</span><strong>Teacher, course, hours, amount, status, note</strong></div>
+            <div class="meta-row"><span>导出选中记录</span><strong>适合导出指定批次</strong></div>
+            <div class="meta-row"><span>导出筛选结果</span><strong>适合按学期或状态汇总</strong></div>
+            <div class="meta-row"><span>主要字段</span><strong>教师、课程、课时、金额、状态、审批意见</strong></div>
           </div>
         </article>
       </aside>
@@ -665,7 +665,7 @@ function renderAdminDashboard(user) {
 
 function renderTeacherTable(claims) {
   if (!claims.length) {
-    return `<div class="empty-state"><p>No claims yet. Submit one above and it will appear here immediately.</p></div>`;
+    return `<div class="empty-state"><p>当前还没有申报记录。你提交后会立即显示在这里。</p></div>`;
   }
 
   return `
@@ -673,13 +673,13 @@ function renderTeacherTable(claims) {
       <table>
         <thead>
           <tr>
-            <th>Course</th>
-            <th>Semester</th>
-            <th>Settled hours</th>
-            <th>Fee</th>
-            <th>Status</th>
-            <th>Review note</th>
-            <th>Action</th>
+            <th>课程信息</th>
+            <th>学期</th>
+            <th>折算课时</th>
+            <th>课时费</th>
+            <th>状态</th>
+            <th>审批意见</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -687,31 +687,31 @@ function renderTeacherTable(claims) {
             .map(
               (item) => `
                 <tr>
-                  <td data-label="Course">
+                  <td data-label="课程信息">
                     <div class="table-title">
                       <strong>${escapeHtml(item.courseName)}</strong>
-                      <span>${escapeHtml(item.className)} | ${escapeHtml(item.courseCode || "No code")}</span>
+                      <span>${escapeHtml(item.className)} | ${escapeHtml(item.courseCode || "未填写课程代码")}</span>
                       <span>${escapeHtml(formatDateTime(item.submittedAt))}</span>
                     </div>
                   </td>
-                  <td data-label="Semester">
+                  <td data-label="学期">
                     <div class="table-title">
                       <strong>${escapeHtml(item.semester)}</strong>
                       <span>${escapeHtml(courseLabel(item.courseType))}</span>
                     </div>
                   </td>
-                  <td data-label="Settled hours">
+                  <td data-label="折算课时">
                     <div class="table-title">
-                      <strong>${formatNumber(item.settledHours)} h</strong>
-                      <span>Base ${formatNumber(item.baseHours)} | Size ${formatPlain(item.sizeCoef)}</span>
+                      <strong>${formatNumber(item.settledHours)} 课时</strong>
+                      <span>基础 ${formatNumber(item.baseHours)} | 人数系数 ${formatPlain(item.sizeCoef)}</span>
                     </div>
                   </td>
-                  <td data-label="Fee">${formatCurrency(item.amount)}</td>
-                  <td data-label="Status"><span class="status-badge ${escapeHtml(item.status)}">${escapeHtml(statusLabel(item.status))}</span></td>
-                  <td data-label="Review note"><span class="table-note">${escapeHtml(item.approvalNote || "No note yet")}</span></td>
-                  <td data-label="Action">
+                  <td data-label="课时费">${formatCurrency(item.amount)}</td>
+                  <td data-label="状态"><span class="status-badge ${escapeHtml(item.status)}">${escapeHtml(statusLabel(item.status))}</span></td>
+                  <td data-label="审批意见"><span class="table-note">${escapeHtml(item.approvalNote || "暂无审批意见")}</span></td>
+                  <td data-label="操作">
                     <div class="inline-actions">
-                      ${canEditClaim(item) ? `<button class="mini-button" type="button" data-action="edit-claim" data-id="${item.id}">Edit</button>` : `<button class="mini-button" type="button" disabled>Locked</button>`}
+                      ${canEditClaim(item) ? `<button class="mini-button" type="button" data-action="edit-claim" data-id="${item.id}">编辑</button>` : `<button class="mini-button" type="button" disabled>已锁定</button>`}
                     </div>
                   </td>
                 </tr>
@@ -726,7 +726,7 @@ function renderTeacherTable(claims) {
 
 function renderAdminTable(claims, allVisibleSelected) {
   if (!claims.length) {
-    return `<div class="empty-state"><p>No records match the current filter.</p></div>`;
+    return `<div class="empty-state"><p>当前筛选条件下没有匹配的记录。</p></div>`;
   }
 
   return `
@@ -735,13 +735,13 @@ function renderAdminTable(claims, allVisibleSelected) {
         <thead>
           <tr>
             <th class="checkbox-cell"><input type="checkbox" data-role="select-all" ${allVisibleSelected ? "checked" : ""} /></th>
-            <th>Teacher</th>
-            <th>Course</th>
-            <th>Hours</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Submitted</th>
-            <th>Action</th>
+            <th>教师</th>
+            <th>课程</th>
+            <th>课时</th>
+            <th>金额</th>
+            <th>状态</th>
+            <th>提交时间</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -749,35 +749,35 @@ function renderAdminTable(claims, allVisibleSelected) {
             .map(
               (item) => `
                 <tr>
-                  <td data-label="Select" class="checkbox-cell">
+                  <td data-label="选择" class="checkbox-cell">
                     <input type="checkbox" data-role="select-one" data-id="${item.id}" ${ui.selectedIds.has(item.id) ? "checked" : ""} />
                   </td>
-                  <td data-label="Teacher">
+                  <td data-label="教师">
                     <div class="table-title">
                       <strong>${escapeHtml(item.teacherName)}</strong>
                       <span>${escapeHtml(item.department)} | ${escapeHtml(item.employeeNo)}</span>
                     </div>
                   </td>
-                  <td data-label="Course">
+                  <td data-label="课程">
                     <div class="table-title">
                       <strong>${escapeHtml(item.courseName)}</strong>
                       <span>${escapeHtml(item.semester)} | ${escapeHtml(item.className)}</span>
                     </div>
                   </td>
-                  <td data-label="Hours">
+                  <td data-label="课时">
                     <div class="table-title">
-                      <strong>${formatNumber(item.settledHours)} h</strong>
-                      <span>Base ${formatNumber(item.baseHours)} | Adj ${formatPlain(item.adjustmentCoef)}</span>
+                      <strong>${formatNumber(item.settledHours)} 课时</strong>
+                      <span>基础 ${formatNumber(item.baseHours)} | 调节系数 ${formatPlain(item.adjustmentCoef)}</span>
                     </div>
                   </td>
-                  <td data-label="Amount">${formatCurrency(item.amount)}</td>
-                  <td data-label="Status"><span class="status-badge ${escapeHtml(item.status)}">${escapeHtml(statusLabel(item.status))}</span></td>
-                  <td data-label="Submitted">${escapeHtml(formatDateTime(item.submittedAt))}</td>
-                  <td data-label="Action">
+                  <td data-label="金额">${formatCurrency(item.amount)}</td>
+                  <td data-label="状态"><span class="status-badge ${escapeHtml(item.status)}">${escapeHtml(statusLabel(item.status))}</span></td>
+                  <td data-label="提交时间">${escapeHtml(formatDateTime(item.submittedAt))}</td>
+                  <td data-label="操作">
                     <div class="inline-actions">
-                      <button class="mini-button" type="button" data-action="open-review" data-id="${item.id}">Review</button>
-                      <button class="mini-button" type="button" data-action="quick-approve" data-id="${item.id}" ${item.status === "approved" ? "disabled" : ""}>Approve</button>
-                      <button class="mini-button" type="button" data-action="quick-return" data-id="${item.id}" ${item.status === "returned" ? "disabled" : ""}>Return</button>
+                      <button class="mini-button" type="button" data-action="open-review" data-id="${item.id}">审核</button>
+                      <button class="mini-button" type="button" data-action="quick-approve" data-id="${item.id}" ${item.status === "approved" ? "disabled" : ""}>通过</button>
+                      <button class="mini-button" type="button" data-action="quick-return" data-id="${item.id}" ${item.status === "returned" ? "disabled" : ""}>退回</button>
                     </div>
                   </td>
                 </tr>
@@ -792,48 +792,48 @@ function renderAdminTable(claims, allVisibleSelected) {
 
 function renderReviewPanel(item) {
   if (!item) {
-    return `<div class="empty-state"><p>Select a claim from the table to inspect details and submit an approval note.</p></div>`;
+    return `<div class="empty-state"><p>请先从左侧表格中选择一条记录查看详细信息并填写审批意见。</p></div>`;
   }
 
   return `
     <div class="stack">
       <div class="detail-box">
         <div class="meta-list">
-          <div class="meta-row"><span>Teacher</span><strong>${escapeHtml(item.teacherName)} / ${escapeHtml(item.employeeNo)}</strong></div>
-          <div class="meta-row"><span>Course</span><strong>${escapeHtml(item.courseName)}</strong></div>
-          <div class="meta-row"><span>Semester</span><strong>${escapeHtml(item.semester)}</strong></div>
-          <div class="meta-row"><span>Class</span><strong>${escapeHtml(item.className)}</strong></div>
-          <div class="meta-row"><span>Hours</span><strong>${formatNumber(item.settledHours)} h</strong></div>
-          <div class="meta-row"><span>Fee</span><strong>${formatCurrency(item.amount)}</strong></div>
+          <div class="meta-row"><span>教师</span><strong>${escapeHtml(item.teacherName)} / ${escapeHtml(item.employeeNo)}</strong></div>
+          <div class="meta-row"><span>课程</span><strong>${escapeHtml(item.courseName)}</strong></div>
+          <div class="meta-row"><span>学期</span><strong>${escapeHtml(item.semester)}</strong></div>
+          <div class="meta-row"><span>教学班</span><strong>${escapeHtml(item.className)}</strong></div>
+          <div class="meta-row"><span>折算课时</span><strong>${formatNumber(item.settledHours)} 课时</strong></div>
+          <div class="meta-row"><span>课时费</span><strong>${formatCurrency(item.amount)}</strong></div>
         </div>
 
         <div class="chip-row spaced">
-          <span class="formula-chip">Course coef ${formatPlain(item.typeCoef)}</span>
-          <span class="formula-chip">Size coef ${formatPlain(item.sizeCoef)}</span>
-          <span class="formula-chip">Adj coef ${formatPlain(item.adjustmentCoef)}</span>
+          <span class="formula-chip">课程系数 ${formatPlain(item.typeCoef)}</span>
+          <span class="formula-chip">人数系数 ${formatPlain(item.sizeCoef)}</span>
+          <span class="formula-chip">调节系数 ${formatPlain(item.adjustmentCoef)}</span>
           <span class="formula-chip">${escapeHtml(statusLabel(item.status))}</span>
         </div>
 
         <div class="aside-note spaced">
-          <strong>Teacher remarks</strong>
-          <p class="muted">${escapeHtml(item.remarks || "No remarks provided.")}</p>
+          <strong>教师备注</strong>
+          <p class="muted">${escapeHtml(item.remarks || "教师未填写备注。")}</p>
         </div>
       </div>
 
       <form id="review-form" class="stack" data-id="${item.id}">
         <label class="field-stack">
-          <span class="field-label">Approval note</span>
-          <textarea name="reviewNote" placeholder="For example: approved under the generic demo rule.">${escapeHtml(ui.reviewNote || item.approvalNote || "")}</textarea>
+          <span class="field-label">审批意见</span>
+          <textarea name="reviewNote" placeholder="例如：按当前通用规则审批通过。">${escapeHtml(ui.reviewNote || item.approvalNote || "")}</textarea>
         </label>
 
         <div class="helper-row">
-          <span>Last reviewed: ${escapeHtml(item.reviewedAt ? formatDateTime(item.reviewedAt) : "Never")}</span>
-          <span>Reviewer: ${escapeHtml(item.reviewerName || "None")}</span>
+          <span>最近审批时间：${escapeHtml(item.reviewedAt ? formatDateTime(item.reviewedAt) : "暂无")}</span>
+          <span>审批人：${escapeHtml(item.reviewerName || "暂无")}</span>
         </div>
 
         <div class="inline-actions">
-          <button class="button" type="submit" name="decision" value="approved" ${item.status === "approved" ? "disabled" : ""}>Approve</button>
-          <button class="button-secondary" type="submit" name="decision" value="returned" ${item.status === "returned" ? "disabled" : ""}>Return</button>
+          <button class="button" type="submit" name="decision" value="approved" ${item.status === "approved" ? "disabled" : ""}>审批通过</button>
+          <button class="button-secondary" type="submit" name="decision" value="returned" ${item.status === "returned" ? "disabled" : ""}>退回修改</button>
         </div>
       </form>
     </div>
@@ -848,37 +848,37 @@ function renderClaimPreview(values) {
     <article class="panel">
       <div class="panel-head">
         <div>
-          <span class="panel-kicker">Live Calculator</span>
-          <h2>Real-time estimate</h2>
-          <p class="panel-subtitle">This preview updates as the teacher edits the form.</p>
+          <span class="panel-kicker">实时测算</span>
+          <h2>课时与课时费预估</h2>
+          <p class="panel-subtitle">教师修改表单后，这里的结果会实时更新。</p>
         </div>
       </div>
 
       <div class="formula-box">
         <div class="chip-row">
           <span class="formula-chip">${escapeHtml(courseType.label)}</span>
-          <span class="formula-chip">Course ${formatPlain(calc.typeCoef)}</span>
-          <span class="formula-chip">Class ${formatPlain(calc.sizeCoef)}</span>
-          <span class="formula-chip">Adj ${formatPlain(calc.adjustmentCoef)}</span>
+          <span class="formula-chip">课程系数 ${formatPlain(calc.typeCoef)}</span>
+          <span class="formula-chip">人数系数 ${formatPlain(calc.sizeCoef)}</span>
+          <span class="formula-chip">调节系数 ${formatPlain(calc.adjustmentCoef)}</span>
         </div>
 
         <div class="formula-value">
           <div>
-            <span class="tiny-label">Settled hours</span>
+            <span class="tiny-label">折算课时</span>
             <strong class="mono">${formatNumber(calc.settledHours)}</strong>
           </div>
           <div class="text-right">
-            <span class="tiny-label">Teaching fee</span>
+            <span class="tiny-label">课时费</span>
             <strong class="mono">${formatCurrency(calc.amount)}</strong>
           </div>
         </div>
 
         <div class="formula-breakdown">
-          <div class="formula-row"><span>Base hours</span><strong>${formatNumber(calc.baseHours)}</strong></div>
-          <div class="formula-row"><span>Extra hours</span><strong>${formatNumber(calc.extraHours)}</strong></div>
-          <div class="formula-row"><span>Class size band</span><strong>${escapeHtml(calc.sizeBand)}</strong></div>
-          <div class="formula-row"><span>Formula</span><strong>(${formatNumber(calc.baseHours)} + ${formatNumber(calc.extraHours)}) x ${formatPlain(calc.typeCoef)} x ${formatPlain(calc.sizeCoef)} x ${formatPlain(calc.adjustmentCoef)}</strong></div>
-          <div class="formula-row"><span>Unit price</span><strong>${formatCurrency(calc.unitPrice)}</strong></div>
+          <div class="formula-row"><span>基础课时</span><strong>${formatNumber(calc.baseHours)}</strong></div>
+          <div class="formula-row"><span>额外课时</span><strong>${formatNumber(calc.extraHours)}</strong></div>
+          <div class="formula-row"><span>人数区间</span><strong>${escapeHtml(calc.sizeBand)}</strong></div>
+          <div class="formula-row"><span>计算公式</span><strong>(${formatNumber(calc.baseHours)} + ${formatNumber(calc.extraHours)}) x ${formatPlain(calc.typeCoef)} x ${formatPlain(calc.sizeCoef)} x ${formatPlain(calc.adjustmentCoef)}</strong></div>
+          <div class="formula-row"><span>课时单价</span><strong>${formatCurrency(calc.unitPrice)}</strong></div>
         </div>
       </div>
     </article>
@@ -908,7 +908,7 @@ function renderNotFound() {
   return `
     <section class="panel spaced">
       <div class="empty-state">
-        <p>The requested page does not exist. Please return home or open the teacher/admin entry pages.</p>
+        <p>页面不存在，请返回首页或重新进入教师端、管理员端入口。</p>
       </div>
     </section>
   `;
@@ -927,7 +927,7 @@ function handleClick(event) {
     ui.reviewId = null;
     ui.reviewNote = "";
     ui.selectedIds.clear();
-    setNotice("Logged out successfully.", "success");
+    setNotice("已成功退出登录。", "success");
     navigate("/");
     return;
   }
@@ -998,7 +998,7 @@ function handleClick(event) {
   }
 
   if (action === "reset-demo") {
-    const confirmed = window.confirm("Reset all local demo data and restore the seeded accounts?");
+    const confirmed = window.confirm("是否重置当前浏览器中的演示数据，并恢复内置演示账号？");
     if (!confirmed) return;
 
     store = createInitialStore();
@@ -1007,7 +1007,7 @@ function handleClick(event) {
     ui.reviewId = null;
     ui.reviewNote = "";
     ui.selectedIds.clear();
-    setNotice("Demo data has been reset.", "success");
+    setNotice("演示数据已重置。", "success");
     navigate("/");
   }
 }
@@ -1097,7 +1097,7 @@ function login(form, role) {
   const password = String(data.get("password") || "");
 
   if (!username || !password) {
-    setNotice("Please enter both username and password.", "error");
+    setNotice("请输入用户名和密码。", "error");
     return;
   }
 
@@ -1106,7 +1106,7 @@ function login(form, role) {
   );
 
   if (!user) {
-    setNotice("Incorrect username or password.", "error");
+    setNotice("用户名或密码不正确。", "error");
     return;
   }
 
@@ -1117,7 +1117,7 @@ function login(form, role) {
   };
 
   persistStore();
-  setNotice(`Signed in as ${role}.`, "success");
+  setNotice(`已成功登录${role === "teacher" ? "教师端" : "管理员端"}。`, "success");
   navigate(role === "teacher" ? "/teacher" : "/admin");
 }
 
@@ -1132,22 +1132,22 @@ function register(form) {
   const employeeNo = cleanText(data.get("employeeNo"));
 
   if (!name || !username || !email || !password || !department || !employeeNo) {
-    setNotice("Please complete all registration fields.", "error");
+    setNotice("请完整填写注册信息。", "error");
     return;
   }
 
   if (!email.includes("@")) {
-    setNotice("Please enter a valid email address.", "error");
+    setNotice("请输入有效的邮箱地址。", "error");
     return;
   }
 
   if (password.length < 6) {
-    setNotice("Password must be at least 6 characters.", "error");
+    setNotice("密码至少需要6位字符。", "error");
     return;
   }
 
   if (store.users.some((item) => item.username.toLowerCase() === username.toLowerCase())) {
-    setNotice("This username already exists.", "error");
+    setNotice("该用户名已存在，请更换一个。", "error");
     return;
   }
 
@@ -1171,7 +1171,7 @@ function register(form) {
   };
 
   persistStore();
-  setNotice(`Created and signed in as ${role}.`, "success");
+  setNotice(`已创建并登录${role === "teacher" ? "教师账号" : "管理员账号"}。`, "success");
   navigate(role === "teacher" ? "/teacher" : "/admin");
 }
 
@@ -1193,7 +1193,7 @@ function submitClaim(form) {
 
   setClaims(nextClaims);
   ui.teacherEditId = null;
-  setNotice(existing ? "Claim updated and resubmitted." : "Claim submitted successfully.", "success");
+  setNotice(existing ? "申报已更新并重新提交。" : "课时申报提交成功。", "success");
   renderApp();
 }
 
@@ -1212,14 +1212,14 @@ function buildClaim(formData, user, existing) {
     remarks: cleanText(formData.get("remarks")),
   };
 
-  if (!raw.courseName || !raw.className) return { error: "Course name and class name are required." };
-  if (!COURSE_MAP[raw.courseType]) return { error: "Invalid course type." };
-  if (!Number.isFinite(raw.studentCount) || raw.studentCount < 1) return { error: "Student count must be greater than 0." };
-  if (!Number.isFinite(raw.weeks) || raw.weeks < 1 || raw.weeks > 30) return { error: "Weeks must be between 1 and 30." };
-  if (!Number.isFinite(raw.weeklyHours) || raw.weeklyHours <= 0) return { error: "Weekly hours must be greater than 0." };
-  if (!Number.isFinite(raw.extraHours) || raw.extraHours < 0) return { error: "Extra hours cannot be negative." };
+  if (!raw.courseName || !raw.className) return { error: "课程名称和教学班名称不能为空。" };
+  if (!COURSE_MAP[raw.courseType]) return { error: "课程类型无效，请重新选择。" };
+  if (!Number.isFinite(raw.studentCount) || raw.studentCount < 1) return { error: "学生人数必须大于0。" };
+  if (!Number.isFinite(raw.weeks) || raw.weeks < 1 || raw.weeks > 30) return { error: "授课周数必须在1到30之间。" };
+  if (!Number.isFinite(raw.weeklyHours) || raw.weeklyHours <= 0) return { error: "周学时必须大于0。" };
+  if (!Number.isFinite(raw.extraHours) || raw.extraHours < 0) return { error: "额外课时不能为负数。" };
   if (!Number.isFinite(raw.adjustmentCoef) || raw.adjustmentCoef < 0.5 || raw.adjustmentCoef > 2) {
-    return { error: "Adjustment coefficient must be between 0.5 and 2." };
+    return { error: "调节系数必须在0.5到2之间。" };
   }
 
   const calc = calculateClaim(raw);
@@ -1288,7 +1288,7 @@ function applyReview(id, decision, note) {
 
   ui.reviewId = id;
   ui.reviewNote = reviewNote;
-  setNotice(nextStatus === "approved" ? "Claim approved." : "Claim returned to teacher.", "success");
+  setNotice(nextStatus === "approved" ? "已审批通过该记录。" : "该记录已退回给教师修改。", "success");
   renderApp();
 }
 
@@ -1299,7 +1299,7 @@ function approveSelected() {
   const claims = getClaims();
   const pendingSelected = claims.filter((item) => ui.selectedIds.has(item.id) && item.status === "pending");
   if (!pendingSelected.length) {
-    setNotice("Select at least one pending claim first.", "error");
+    setNotice("请先选择至少一条待审批记录。", "error");
     return;
   }
 
@@ -1312,7 +1312,7 @@ function approveSelected() {
         ? {
             ...item,
             status: "approved",
-            approvalNote: item.approvalNote || "Batch approved.",
+            approvalNote: item.approvalNote || "批量审批通过。",
             reviewedAt: now,
             reviewerId: admin.id,
             reviewerName: admin.name,
@@ -1321,30 +1321,30 @@ function approveSelected() {
     )
   );
 
-  setNotice(`Approved ${pendingSelected.length} selected claims.`, "success");
+  setNotice(`已批量通过 ${pendingSelected.length} 条记录。`, "success");
   renderApp();
 }
 
 function exportSelected() {
   const items = getClaims().filter((item) => ui.selectedIds.has(item.id));
   if (!items.length) {
-    setNotice("Select at least one claim before export.", "error");
+    setNotice("请先选择至少一条记录再导出。", "error");
     return;
   }
 
   exportCsv(items, "selected");
-  setNotice(`Exported ${items.length} selected claims.`, "success");
+  setNotice(`已导出 ${items.length} 条选中记录。`, "success");
 }
 
 function exportFiltered() {
   const items = filterClaims(sortClaims(getClaims()));
   if (!items.length) {
-    setNotice("There is no data under the current filter.", "error");
+    setNotice("当前筛选条件下没有可导出的数据。", "error");
     return;
   }
 
   exportCsv(items, "filtered");
-  setNotice(`Exported ${items.length} filtered claims.`, "success");
+  setNotice(`已导出 ${items.length} 条筛选结果。`, "success");
 }
 
 function fillDemoLogin(role) {
@@ -1474,30 +1474,30 @@ function sortClaims(claims) {
 
 function exportCsv(items, scope) {
   const header = [
-    "Claim ID",
-    "Status",
-    "Semester",
-    "Teacher",
-    "Employee No",
-    "Department",
-    "Course Name",
-    "Course Code",
-    "Course Type",
-    "Class Name",
-    "Students",
-    "Weeks",
-    "Weekly Hours",
-    "Extra Hours",
-    "Adjustment Coef",
-    "Base Hours",
-    "Course Coef",
-    "Class Size Coef",
-    "Settled Hours",
-    "Unit Price",
-    "Teaching Fee",
-    "Submitted At",
-    "Reviewed At",
-    "Approval Note",
+    "申报编号",
+    "状态",
+    "学期",
+    "教师姓名",
+    "教师工号",
+    "所属院系",
+    "课程名称",
+    "课程代码",
+    "课程类型",
+    "教学班名称",
+    "学生人数",
+    "授课周数",
+    "周学时",
+    "额外课时",
+    "调节系数",
+    "基础课时",
+    "课程系数",
+    "人数系数",
+    "折算课时",
+    "课时单价",
+    "课时费",
+    "提交时间",
+    "审批时间",
+    "审批意见",
   ];
 
   const rows = items.map((item) => [
@@ -1531,7 +1531,7 @@ function exportCsv(items, scope) {
     .concat(rows.map((row) => row.map(csvEscape).join(",")))
     .join("\n");
 
-  downloadBlob(new Blob([csv], { type: "text/csv;charset=utf-8" }), `teaching-demo-${scope}-${formatDateForFile(new Date())}.csv`);
+  downloadBlob(new Blob([csv], { type: "text/csv;charset=utf-8" }), `课时申报导出-${scope === "selected" ? "选中记录" : "筛选结果"}-${formatDateForFile(new Date())}.csv`);
 }
 
 function loadStore() {
@@ -1568,33 +1568,33 @@ function createInitialStore() {
     {
       id: "admin-001",
       role: "admin",
-      name: "Academic Admin",
+      name: "教务管理员",
       username: "admin",
       email: "admin@demo.edu",
       password: "Demo123!",
-      department: "Academic Affairs Office",
+      department: "教务处",
       employeeNo: "A2026001",
       createdAt: "2026-03-27T08:00:00.000Z",
     },
     {
       id: "teacher-001",
       role: "teacher",
-      name: "Zhang Chen",
+      name: "张晨",
       username: "zhang.teacher",
       email: "zhang@demo.edu",
       password: "Demo123!",
-      department: "Computer Science School",
+      department: "计算机学院",
       employeeNo: "T2026001",
       createdAt: "2026-03-27T08:03:00.000Z",
     },
     {
       id: "teacher-002",
       role: "teacher",
-      name: "Li Min",
+      name: "李敏",
       username: "li.teacher",
       email: "li@demo.edu",
       password: "Demo123!",
-      department: "AI School",
+      department: "人工智能学院",
       employeeNo: "T2026002",
       createdAt: "2026-03-27T08:06:00.000Z",
     },
@@ -1604,44 +1604,44 @@ function createInitialStore() {
     seedClaim({
       id: "claim-1001",
       teacherId: "teacher-001",
-      teacherName: "Zhang Chen",
+      teacherName: "张晨",
       employeeNo: "T2026001",
-      department: "Computer Science School",
+      department: "计算机学院",
       semester: "2025-2026-2",
       courseType: "required",
-      courseName: "Data Structure",
+      courseName: "数据结构",
       courseCode: "CS201",
-      className: "2024 Software Engineering Class 1",
+      className: "2024级软件工程1班",
       studentCount: 68,
       weeks: 16,
       weeklyHours: 4,
       extraHours: 2,
       adjustmentCoef: 1,
-      remarks: "Includes Q and A and lab support hours.",
+      remarks: "包含答疑和实验辅导课时。",
       submittedAt: "2026-03-10T01:30:00.000Z",
       status: "approved",
-      approvalNote: "Approved under the generic demo rule.",
+      approvalNote: "按当前通用规则审批通过。",
       reviewedAt: "2026-03-11T02:10:00.000Z",
       reviewerId: "admin-001",
-      reviewerName: "Academic Admin",
+      reviewerName: "教务管理员",
     }),
     seedClaim({
       id: "claim-1002",
       teacherId: "teacher-001",
-      teacherName: "Zhang Chen",
+      teacherName: "张晨",
       employeeNo: "T2026001",
-      department: "Computer Science School",
+      department: "计算机学院",
       semester: "2025-2026-2",
       courseType: "lab",
-      courseName: "Programming Lab",
+      courseName: "程序设计实验",
       courseCode: "CS210L",
-      className: "2024 Computer Science Class 2",
+      className: "2024级计算机科学2班",
       studentCount: 42,
       weeks: 12,
       weeklyHours: 2,
       extraHours: 4,
       adjustmentCoef: 1.05,
-      remarks: "Extra setup and grouped lab support.",
+      remarks: "包含实验准备和分组辅导等额外工作量。",
       submittedAt: "2026-03-16T08:20:00.000Z",
       status: "pending",
       approvalNote: "",
@@ -1652,26 +1652,26 @@ function createInitialStore() {
     seedClaim({
       id: "claim-1003",
       teacherId: "teacher-002",
-      teacherName: "Li Min",
+      teacherName: "李敏",
       employeeNo: "T2026002",
-      department: "AI School",
+      department: "人工智能学院",
       semester: "2025-2026-2",
       courseType: "practice",
-      courseName: "Machine Learning Project",
+      courseName: "机器学习课程设计",
       courseCode: "AI309P",
-      className: "2023 AI Class 1",
+      className: "2023级人工智能1班",
       studentCount: 84,
       weeks: 8,
       weeklyHours: 4,
       extraHours: 6,
       adjustmentCoef: 1.1,
-      remarks: "Project review and staged defense included.",
+      remarks: "包含项目评审和阶段答辩。",
       submittedAt: "2026-03-18T03:45:00.000Z",
       status: "returned",
-      approvalNote: "Please add project grouping details before resubmitting.",
+      approvalNote: "请补充分组说明和额外课时依据后重新提交。",
       reviewedAt: "2026-03-19T05:00:00.000Z",
       reviewerId: "admin-001",
-      reviewerName: "Academic Admin",
+      reviewerName: "教务管理员",
     }),
   ];
 
@@ -1818,15 +1818,15 @@ function setNotice(message, type = "info") {
 }
 
 function statusLabel(status) {
-  return STATUS_LABELS[status] || "Unknown";
+  return STATUS_LABELS[status] || "未知状态";
 }
 
 function courseLabel(type) {
-  return COURSE_MAP[type]?.label || "Unknown";
+  return COURSE_MAP[type]?.label || "未知类型";
 }
 
 function defaultReviewNote(status) {
-  return status === "approved" ? "Approved under the generic demo rule." : "Please update the claim and resubmit.";
+  return status === "approved" ? "已按当前演示规则审批通过。" : "请根据退回意见修改后重新提交。";
 }
 
 function renderSelectOptions(values, selected, labelMap = {}) {
@@ -1837,16 +1837,16 @@ function renderSelectOptions(values, selected, labelMap = {}) {
 
 function renderCourseTypeOptions(selected) {
   return COURSE_TYPES.map(
-    (item) => `<option value="${item.id}" ${item.id === selected ? "selected" : ""}>${escapeHtml(item.label)} | coef ${formatPlain(item.coef)}</option>`
+    (item) => `<option value="${item.id}" ${item.id === selected ? "selected" : ""}>${escapeHtml(item.label)} | 系数 ${formatPlain(item.coef)}</option>`
   ).join("");
 }
 
 function renderStatusOptions(selected) {
   return [
-    { value: "all", label: "All statuses" },
-    { value: "pending", label: "Pending" },
-    { value: "approved", label: "Approved" },
-    { value: "returned", label: "Returned" },
+    { value: "all", label: "全部状态" },
+    { value: "pending", label: "待审批" },
+    { value: "approved", label: "已通过" },
+    { value: "returned", label: "已退回" },
   ]
     .map((item) => `<option value="${item.value}" ${item.value === selected ? "selected" : ""}>${escapeHtml(item.label)}</option>`)
     .join("");
@@ -1883,7 +1883,7 @@ function formatNumber(value) {
 }
 
 function formatCurrency(value) {
-  return `RMB ${Number(value || 0).toLocaleString("en-US", {
+  return `人民币 ${Number(value || 0).toLocaleString("zh-CN", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
