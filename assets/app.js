@@ -256,8 +256,8 @@ function renderHome() {
         <div class="story-card">
           <span class="panel-kicker">Demo Accounts</span>
           <ul>
-            <li>Teacher: `zhang.teacher` / `Demo123!`</li>
-            <li>Admin: `admin` / `Demo123!`</li>
+            <li>Teacher: <code>zhang.teacher</code> / <code>Demo123!</code></li>
+            <li>Admin: <code>admin</code> / <code>Demo123!</code></li>
             <li>Both roles also support self-registration in demo mode</li>
           </ul>
         </div>
